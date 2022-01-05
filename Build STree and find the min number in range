@@ -1,0 +1,47 @@
+class GfG
+{
+    static int st[];
+
+    public static int[] constructST(int arr[], int n)
+    {
+        // Add your code here
+         st=new int[4*n];
+        build(arr,0,n-1,0);
+        return st;
+    }
+    static int build(int arr[],int l,int r,int idx)
+    {
+        if(l==r)
+        {
+                 return st[idx]=arr[l];
+        }
+       int mid=(l+r)/2;
+      return  st[idx]=Math.min(build(arr,l,mid,2*idx+1),build(arr,mid+1,r,2*idx+2));
+    /*   build(arr,l,mid,2*idx+1);
+        build(arr,mid+1,r,2*idx+2);
+        st[idx]=Math.min(st[2*idx+1],st[2*idx+2]);*/
+    }
+
+
+    /* The functions returns the
+      min element in the range
+      from l and r */
+    public static int RMQ(int st[], int n, int l, int r)
+    {
+        // Add your code here
+        return solve(st,l,r,0,n-1,0);
+    }
+    static int solve(int st[],int l,int r,int low1,int high1,int idx)
+    {
+        if(low1>=l&&high1<=r)//lies
+            return st[idx];
+        if(high1<l||low1>r)//not lie
+            return Integer.MAX_VALUE;
+        int mid=(low1+high1)/2;
+        int left=solve(st,l,r,low1,mid,2*idx+1);
+        int right=solve(st,l,r,mid+1,high1,2*idx+2);
+        return Math.min(left,right);
+    }
+
+
+}
