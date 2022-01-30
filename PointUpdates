@@ -1,0 +1,33 @@
+  static void pointUpdate(int st[],int arr[],int low,int right,int tar,int idx,int upValue)
+    {
+    /*    if(low==right&&low==tar)
+        {
+            st[idx]+=upValue;
+            return;
+        }
+        if(tar>=low&&tar<=right)
+        {
+            int mid=(low+right)/2 ;
+            pointUpdate(st,arr,low,mid,tar,2*idx+1,upValue);
+            pointUpdate(st,arr,mid+1,right,tar,2*idx+2,upValue);
+           st[idx]=st[2*idx+1]+st[2*idx+2];
+        }*/
+        if(low==right&&low==tar)
+        {
+            st[idx]+=upValue;
+            return;
+        }
+        int mid=(low+right)/2;
+        if(tar>mid)  // go to right
+        {
+            pointUpdate(st,arr,mid+1,right,tar,2*idx+2,upValue);
+        }
+        else
+        {
+            pointUpdate(st,arr,low,mid,tar,2*idx+1,upValue);
+        }
+        st[idx]=st[2*idx+1]+st[2*idx+2];
+    }
+
+
+TIME COMPLEXITY-O(N)
