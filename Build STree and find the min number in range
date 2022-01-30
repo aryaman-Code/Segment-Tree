@@ -33,7 +33,7 @@ class GfG
     }
     static int solve(int st[],int l,int r,int low1,int high1,int idx)
     {
-        if(low1>=l&&high1<=r)//lies
+        if(low1>=l&&high1<=r)//lies    // we need to find min number in range [l,r]   low,high is range in segment tree.. consider the first case
             return st[idx];
         if(high1<l||low1>r)//not lie
             return Integer.MAX_VALUE;
@@ -45,3 +45,6 @@ class GfG
 
 
 }
+
+TIME COMPLEXITY-O(N)
+TIME C FOR Q QUERIES-O(QLOGN) 
