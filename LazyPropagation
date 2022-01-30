@@ -1,0 +1,77 @@
+RANGE UPDATES AND SUM RANGE QUERY
+
+
+    static void rangeUpdate(int lazy[],int st[],int low,int right,int lq,int rq,int update,int idx)  //l1 starting range index
+    {
+     /*   if(lazy[idx]!=0) {
+            st[idx] = st[idx] + (right - low + 1) * upVal;
+            if (low != right) {
+                lazy[2 * idx + 1] = upVal;
+                lazy[2 * idx + 2] = upVal;
+            }
+            lazy[idx] = 0;
+        }
+            if(low>=l1&&right<=r1)  //lies completely
+          {
+              st[idx] = st[idx] + (right - low + 1) * upVal;
+              if (low != right) {
+                  lazy[2 * idx + 1] = upVal;
+                  lazy[2 * idx + 2] = upVal;
+              }
+              return;
+          }
+          else if(low>r1||right<l1)// not lies completely
+             return;
+          //overlaps
+          int mid=(low+right)>>1;
+            rangeUpdate(st,low,mid,l1,r1,2*idx+1,upVal);
+            rangeUpdate(st,mid+1,right,l1,r1,2*idx+2,upVal);
+        st[idx]=st[2*idx+1]+st[2*idx+2];*/
+        if(lazy[idx]!=0)
+        {
+            st[idx]+=(right-low+1)*lazy[idx];
+            if(low!=right)
+            {
+                lazy[2 * idx + 1] += lazy[idx];
+                lazy[2 * idx + 2] += lazy[idx];
+            }
+            lazy[idx]=0;
+        }
+        if(low>=lq&&right<=rq) //completely lies
+        {
+            st[idx]+=(right-low+1)*update;
+            if(low!=right)
+            {
+                lazy[2 * idx + 1] += update;
+                lazy[2 * idx + 2] += update;
+            }
+            return;
+        }
+       else if(low>rq||right<lq||low>right) //completely outside
+         return;
+       //partially
+            int mid=(low+right)/2;
+            rangeUpdate(lazy,st,low,mid,lq,rq,update,2*idx+1);
+            rangeUpdate(lazy,st,mid+1,right,lq,rq,update,2*idx+2);
+            st[idx]=st[2*idx+1]+st[2*idx+2];
+
+    }
+    static int querySumLazy(int lazy[],int st[],int low,int high,int idx,int l,int r)
+    {
+        if(lazy[idx]!=0) {
+            st[idx] = st[idx] + (high - low + 1) * lazy[idx];
+            if (low != high) {
+                lazy[2 * idx + 1] +=lazy[idx] ;
+                lazy[2 * idx + 2] +=lazy[idx];
+            }
+            lazy[idx] = 0;
+        }
+        if(low>=l&&high<=r)
+            return st[idx];
+        if(low>r||high<l||low>high)// not
+            return 0;
+        int mid=(low+high)>>1;
+        int left=querySumLazy(lazy,st,low,mid,2*idx+1,l,r);
+        int right=querySumLazy(lazy,st,mid+1,high,2*idx+2,l,r);
+        return st[idx]=left+right;
+    }
