@@ -1,0 +1,120 @@
+// Best value in string is equal to  number length of longest one repeating character
+
+
+class Node
+{
+    int pre,suf,best,size;
+    char prec,sufc,bestc;
+    Node(char ch)
+    {
+        prec=ch;sufc=ch;bestc=ch;
+        pre=1;suf=1;best=1;size=1;
+    }
+    Node(int pre,int suf,int best,int size,char prec,char sufc,char bestc)
+    {
+        this.pre=pre;this.suf=suf;this.best=best;this.size=size;this.prec=prec;
+        this.sufc=sufc;this.bestc=bestc;
+    } 
+}
+class Solution {
+    
+     Node[] constructST(char arr[], int n)
+    {
+        // Add your code here
+        Node st[]=new Node[4*n];
+        build(arr,0,n-1,0,st);
+        return st;
+    }
+     Node build(char arr[],int l,int r,int idx,Node st[])
+    {
+        if(l==r)
+        {
+                 return st[idx]=new Node(arr[l]);
+        }
+       int mid=(l+r)/2;
+   //      Node a=build(arr,l,mid,2*idx+1,st);
+    //     Node b=build(arr,mid+1,r,2*idx+2,st);
+      return  st[idx]=mergeNode(build(arr,l,mid,2*idx+1,st),build(arr,mid+1,r,2*idx+2,st));
+  
+    }
+    Node mergeNode(Node a,Node b)
+    {
+        Node newnode;
+        int newpre=0,newsuf=0,newbest=0,newsize;
+        char newprec='a',newsufc='a',newbestc='a';
+        
+        newsize=a.size+b.size;
+        
+        // to find new pref
+        if(a.pre==a.size&&a.prec==b.prec)
+           newpre=a.size+b.pre;
+        else
+            newpre=a.pre;
+        newprec=a.prec;
+        
+        // to find new suffix
+        if(b.suf==b.size&&b.sufc==a.sufc)
+           newsuf=b.suf+a.suf;
+        else
+            newsuf=b.suf;
+        newsufc=b.sufc;
+       
+        //to find new best
+        int best1=0;char bestc1='a';
+        if(a.sufc==b.prec)
+        {
+          best1=a.suf+b.pre;
+          bestc1=a.sufc;
+        }
+        if(a.best>=b.best&&a.best>=best1)
+        {
+           newbest=a.best;newbestc=a.bestc;
+        }
+        else if(b.best>=best1)
+        {
+            newbest=b.best;newbestc=b.bestc;
+        }
+        else
+        {
+            newbest=best1;newbestc=bestc1;
+        }
+        return new Node(newpre,newsuf,newbest,newsize,newprec,newsufc,newbestc);
+    }
+
+
+     void pointUpdate(Node st[],char arr[],int low,int right,int tar,int idx,char newChar)
+    {
+   
+        if(low==right&&low==tar)
+        {
+            st[idx]=new Node(newChar);
+            return;
+        }
+        int mid=(low+right)/2;
+        if(tar>mid)  // go to right
+        {
+            pointUpdate(st,arr,mid+1,right,tar,2*idx+2,newChar);
+        }
+        else
+        {
+            pointUpdate(st,arr,low,mid,tar,2*idx+1,newChar);
+        }
+        st[idx]=mergeNode(st[2*idx+1],st[2*idx+2]);
+    }
+
+
+
+    public int[] longestRepeating(String s, String queryCharacters, int[] queryIndices) {
+        int n=s.length();int k=queryIndices.length;
+        char arr[]=s.toCharArray();
+        Node st[]=constructST(arr,n);
+        int ans[]=new int[k];
+        for(int i=0;i<k;i++)
+        {
+            int target=queryIndices[i];char newChar=queryCharacters.charAt(i);
+            pointUpdate(st,arr,0,n-1,target,0,newChar);
+            ans[i]=st[0].best;
+        }
+        return ans;
+    }
+}
